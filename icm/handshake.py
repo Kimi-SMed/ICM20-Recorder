@@ -38,7 +38,7 @@ class SecretHandshake:
     def __init__(self, client: BleakClient, mac_address: str) -> None:
         self._client = client
         self._mac = mac_address
-        self._seq = 0
+        self._seq = 1  # matches icm_control.py: self.sequence = 1
 
         # Shared key template — positions filled from MAC in set_shared_key()
         self._shared_key = bytearray([
@@ -189,10 +189,11 @@ class SecretHandshake:
     # Main entry point
     # ------------------------------------------------------------------
 
-    async def perform(self) -> CryptionMessage:
+    async def perform(self) -> tuple:
         """Execute the full 5-step handshake.
 
-        Returns CryptionMessage(nonce=secret_key1, key=secret_key2).
+        Returns (CryptionMessage, final_seq) where final_seq is the next
+        sequence number to use for post-handshake commands.
         Raises HandshakeError on timeout or protocol violation.
         """
         self.set_shared_key()
@@ -231,5 +232,6 @@ class SecretHandshake:
         if self._secret_key2 is None:
             raise HandshakeError("Handshake ended without secret_key2")
 
+        logger.info("Handshake final seq=%d", self._seq)
         # CryptionMessage(nonce=secret_key1, key=secret_key2)
-        return CryptionMessage(self._secret_key1, self._secret_key2)
+        return CryptionMessage(self._secret_key1, self._secret_key2), self._seq

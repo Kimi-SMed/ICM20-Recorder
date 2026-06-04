@@ -96,6 +96,25 @@ class DevicePanel(QWidget):
         if devices:
             self._device_list.setCurrentRow(0)
 
+    def show_connected_only(self, dev: Dict[str, Any]) -> None:
+        """Shrink list to show only the connected device (called after connect)."""
+        self._devices = [dev]
+        self._device_list.clear()
+        name = dev.get("name") or "Unknown"
+        addr = dev.get("address", "")
+        rssi = dev.get("rssi", 0)
+        text = f"{name}  |  {addr}  |  RSSI: {rssi} dBm"
+        item = QListWidgetItem(text)
+        item.setData(Qt.ItemDataRole.UserRole, addr)
+        self._device_list.addItem(item)
+        self._device_list.setCurrentRow(0)
+
+    def clear_devices(self) -> None:
+        """Clear the device list (call before starting a new scan)."""
+        self._devices = []
+        self._device_list.clear()
+        self._connect_btn.setEnabled(False)
+
     def set_status(self, text: str) -> None:
         """Update status label text."""
         self._status_label.setText(text)
