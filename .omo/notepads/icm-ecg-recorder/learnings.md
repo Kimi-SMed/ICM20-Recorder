@@ -54,3 +54,55 @@ timestamp_ms, sample_index, channel_1, channel_2, marker_id, marker_label, rr_ms
 - Pause:0x1100-0x1500, Brady:0x2100-0x2600, VT:0x3100-0x3700
 - AT:0x4100-0x4700, AF:0x5100-0x5600
 - PVC:0x6100-0x6300, MGT:0x7100-0x7200, Morph:0x8100-0x8200
+
+## 2026-06-04 Hardware Debugging Session
+
+### Sequence Number (CRITICAL - root cause of auth failure)
+- icm_control.py initialises self.sequence = 1 (NOT 0)
+- Handshake and all post-handshake commands share ONE sequence counter
+- Handshake sends 3 frames (step2 challenge, step4 ACK, step6 response) -> seq ends at 4
+- Post-handshake commands MUST continue from handshake final seq (no reset to 0)
+- Resetting seq to 0 causes device to silently reject commands; disconnects after ~1 min
+- Fix: SecretHandshake._seq starts at 1, perform() returns (CryptionMessage, final_seq)
+  ble_client._seq = final_seq after handshake
+
+### Permission Authentication Sequence (CRITICAL)
+- Device enforces 15-minute permission timeout -> GattSessionStatus.CLOSED if expired
+- Required immediately after handshake (matches FWRS_010402.run_test_4):
+  1. CMD_PROGRAM_RTC_DELTA (0x30): sync device RTC
+     payload: struct.pack('<Ibbbb', int(time.time())-1609459200, 32, 0, 0, 0)
+     ICM epoch offset = 1609459200 (2021-01-01), timezone=32 means UTC+8
+  2. CMD_SET_HOST_INFO (0x20, host_type=2): grant 随访程控 permission
+     payload: struct.pack('<12sBBBB', random_12digit_serial.encode(), 2, 0, 0, 0)
+- Repeat both every 14 minutes (QTimer, < 15 min limit)
+- Frame format for both: [0x5A] + CryptionMessage.encrypt(inner_frame) + crc16
+
+### BLE Command Inner Frame (two-CRC-layer structure)
+- Reference path: create_icm_cmd -> send_icm_cmd -> generate_general_cmd
+- create_icm_cmd produces: [len, seq, cmd, data, crc32(data), crc8_checksum]
+- send_icm_cmd extracts: cmd_code=cmd_struct[2], params=cmd_struct[3:-1]
+  (params = data + crc32(data), strips the trailing crc8)
+- generate_general_cmd rebuilds with params:
+  [len+, seq, cmd, params, crc32(params[=data+3 bytes]), final_checksum]
+- Result: inner frame contains crc32(data) embedded in params, then crc32(params) appended
+- Verified byte-identical with reference using fixed test vectors
+
+### Qt Thread Safety
+- All BLE callbacks (on_scan_result, on_connected, on_disconnected, on_handshake_done/error)
+  run in asyncio thread - MUST NOT touch Qt widgets directly
+- Fix: QMetaObject.invokeMethod(self, "_qt_method", Qt.ConnectionType.QueuedConnection, ...)
+- Target methods decorated with @pyqtSlot for proper Qt meta-object registration
+
+### Sweep-line Display (Monitor Mode)
+- Fixed 2500-point numpy circular buffer per channel (10s @ 250Hz)
+- Write pointer _ptr: 0 -> ROLLING_WINDOW_PTS, wraps to 0
+- ERASE_WIDTH = 38 samples (0.15s) of NaN ahead of cursor = blank gap effect
+- connect="finite" in pyqtgraph: auto line-break at NaN values
+- Marker ghost bug: must call _evict_markers(overwrite_set) BEFORE writing new data
+  overwrite_set = set(new_indices) | set(erase_indices)
+  any TextItem whose buf_idx is in overwrite_set is removed before data write
+- InfiniteLine style: Qt.PenStyle.DashLine (pg.QtCore.Qt.DashLine fails at runtime)
+
+### BPM Calculation
+- rr_intervals from ParsedPacket (ms) -> bpm = round(60000 / rr_intervals[0])
+- Only update when rr_intervals is non-empty and rr > 0
