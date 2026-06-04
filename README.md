@@ -22,7 +22,7 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-Dependencies installed: `bleak`, `cryptography`, `crcmod`, `PyQt5`, `pyqtgraph`, `pytest`, `pandas`
+Dependencies: `bleak`, `cryptography`, `crcmod`, `PyQt5`, `pyqtgraph`, `pytest`, `pandas`
 
 ## Running
 
@@ -30,14 +30,32 @@ Dependencies installed: `bleak`, `cryptography`, `crcmod`, `PyQt5`, `pyqtgraph`,
 python main.py
 ```
 
-The application will open. Follow these steps:
+Workflow:
 
-1. Click **Scan** to discover ICM devices
-2. Select your device from the list
-3. Click **Connect** (auto-performs handshake, ~5 seconds)
-4. Click **Start Recording** to begin saving ECG to CSV
-5. Click **Stop Recording** when done
-6. CSV files are saved to `%USERPROFILE%\Documents\ICM_ECG\`
+1. Click **Scan** — device list clears and refreshes with discovered ICM devices
+2. Select your device, click **Connect** (handshake + RTC sync + permission auth, ~5s)
+3. ECG waveform starts streaming automatically after handshake
+4. Real-time heart rate (BPM) shown in bottom-right corner
+5. Click **Start Recording** to save ECG to CSV
+6. Click **Stop Recording** when done — waveform keeps running
+7. Click **Disconnect** to end the session — plot resets for next connection
+8. CSV files saved to `%USERPROFILE%\Documents\ICM_ECG\`
+
+## Display
+
+- Cardiac-monitor sweep-line mode: waveform writes left→right, wraps and overwrites
+- 10-second rolling window at 250 Hz
+- Light grey background, blue curve, orange event markers
+- Grey dashed cursor line marks the current write position
+- Real-time BPM display (bold, bottom-right)
+
+## Permission / Authentication
+
+After handshake, the app automatically sends:
+1. `CMD_PROGRAM_RTC_DELTA` (0x30) — syncs device clock to current system time (UTC+8)
+2. `CMD_SET_HOST_INFO` (0x20, host_type=2) — grants 随访程控 (follow-up) permission
+
+Both commands repeat every **14 minutes** to maintain the permission session (device enforces a 15-minute timeout). Without this, the device disconnects after ~1 minute.
 
 ## Building the Executable
 
@@ -71,7 +89,7 @@ Sample rate: 250 Hz (4 ms per sample)
 pytest tests/ -v
 ```
 
-Expected: 30+ tests, all pass.
+Expected: 30 tests, all pass.
 
 ## Project Structure
 
@@ -81,17 +99,17 @@ ICM2-CoDemo-Ultrasonic/
 ├── requirements.txt         # Python dependencies
 ├── icm_recorder.spec        # PyInstaller build spec
 ├── icm/
-│   ├── ble_client.py       # BLE scan/connect/notify
+│   ├── ble_client.py       # BLE scan/connect/notify + RTC sync + permission auth
 │   ├── config.py           # Constants and UUIDs
-│   ├── crypto.py           # AES encryption for handshake
-│   ├── ecg_parser.py       # ECG packet parser
+│   ├── crypto.py           # AES-CTR encryption (CryptionMessage)
+│   ├── ecg_parser.py       # ECG packet parser (148-byte BLE notify)
 │   ├── ecg_writer.py       # CSV streaming writer
-│   └── handshake.py        # Challenge-response handshake
+│   └── handshake.py        # 5-step challenge-response handshake
 ├── ui/
-│   ├── async_bridge.py     # asyncio ↔ Qt bridge
-│   ├── device_panel.py     # Scan list + connect buttons
-│   ├── main_window.py      # Main application window
-│   └── plot_widget.py      # Real-time ECG plot
+│   ├── async_bridge.py     # asyncio ↔ Qt thread bridge (queue + QTimer)
+│   ├── device_panel.py     # Scan list + connect/disconnect buttons
+│   ├── main_window.py      # Main window, QTimer poll loop, BLE callbacks
+│   └── plot_widget.py      # Sweep-line ECG plot (pyqtgraph, circular buffer)
 └── tests/
     ├── test_crypto.py
     ├── test_ecg_parser.py
@@ -100,9 +118,28 @@ ICM2-CoDemo-Ultrasonic/
         └── sample_packets.py
 ```
 
-## Notes
+## Architecture Notes
 
-- Requires BLE connection to an ICM2 device for full operation
-- Handshake is mandatory (even for ECG-only recording)
-- ECG channel data is transmitted in plaintext after handshake
-- Multiple recordings per session: stop then start creates a new CSV file
+### Threading
+- asyncio event loop runs in a daemon background thread (`AsyncBridge`)
+- BLE notify callbacks → `queue.Queue.put_nowait()` (asyncio thread)
+- `QTimer(50ms)` → `queue.Queue.get_nowait()` → plot + CSV (Qt main thread)
+- All BLE state callbacks marshalled to Qt thread via `QMetaObject.invokeMethod(QueuedConnection)`
+
+### Command Sequence (post-handshake)
+- Handshake seq starts at **1** (matches firmware expectation)
+- Post-handshake seq continues from handshake final value (no reset)
+- Commands encrypted with `CryptionMessage(secret_key1, secret_key2)` from handshake
+- Frame format: `[0x5A] + AES-CTR(inner_frame) + CRC16`
+
+### Key Protocol Constants
+- BLE UUIDs: UP_CMD `5ac73403-...`, DOWN_CMD `5ac73402-...`, ECG_DATA `5ac73503-...`
+- ECG packet: `struct.unpack("<74h", 148 bytes)` — CH1[0:32], CH2[32:64], markers[64:68], RR[68:72], amplitude[73]
+- Permission timeout: 15 minutes (app renews every 14 min)
+- ICM epoch offset: `1609459200` (2021-01-01 00:00:00 UTC)
+
+## Known Limitations
+
+- No zoom/pan on ECG plot (intentional — monitor-style fixed view)
+- Requires physical ICM2 GEN2 device for full operation
+- Single BLE connection at a time
