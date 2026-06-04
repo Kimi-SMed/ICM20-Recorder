@@ -1,0 +1,40 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run ICM2 ECG Recorder",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
+        },
+        {
+            "name": "Run Tests (pytest)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": ["tests/", "-v", "--tb=short"],
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
+        },
+        {
+            "name": "Debug Single Test File",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": ["${file}", "-v", "--tb=long", "-s"],
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
+        }
+    ]
+}

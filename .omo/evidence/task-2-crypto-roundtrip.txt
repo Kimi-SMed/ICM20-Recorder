@@ -1,0 +1,14 @@
+Task 2: icm/crypto.py - Copy and adapt command_encryption.py
+=====================================================================
+
+✓ File created: D:\Singular_Medical\ICM_GEN2\Dvlp\ICM2-CoDemo-Ultrasonic\icm\crypto.py
+✓ Module docstring added at top of file
+✓ All original content copied byte-identical
+✓ Import test: All 4 exports (encrypt_CBC, decrypt_CBC, CryptionMessage, append_crc16) successful
+✓ Round-trip test: encrypt_CBC + decrypt_CBC returns input unchanged
+  Key: 16 null bytes
+  Plaintext: b'1234567891234567'
+  Ciphertext: (binary, 16 bytes)
+  Result: roundtrip OK
+
+Status: COMPLETE

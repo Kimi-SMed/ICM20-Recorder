@@ -1,0 +1,34 @@
+Task 14: PyInstaller Spec + Build Attempt
+Date: 2026-06-04
+Working Directory: D:\Singular_Medical\ICM_GEN2\Dvlp\ICM2-CoDemo-Ultrasonic\
+
+=== SPEC FILE ===
+icm_recorder.spec: CREATED
+ast.parse validation: PASSED (valid Python)
+
+collect_all packages:
+  - bleak
+  - winrt
+  - PyQt5
+  - pyqtgraph
+  - cryptography
+
+EXE mode: onefile (console=False, upx=True)
+Entry point: main.py
+
+=== BUILD ATTEMPT ===
+PyInstaller status: NOT INSTALLED
+python -m PyInstaller --version -> "No module named PyInstaller"
+
+Build result: SKIPPED (pyinstaller not available)
+dist/icm_recorder.exe: NOT PRODUCED
+
+=== NEXT STEPS ===
+Install PyInstaller:
+  pip install pyinstaller
+
+Then build:
+  pyinstaller --noconfirm icm_recorder.spec
+
+Expected output:
+  dist\icm_recorder.exe  (single-file onefile EXE, no console window)

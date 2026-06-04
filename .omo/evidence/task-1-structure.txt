@@ -1,0 +1,46 @@
+﻿文件夹 PATH 列表
+卷序列号为 84F6-1C3C
+D:.
+│  .gitignore
+│  requirements.txt
+│  
+├─.omo
+│  │  boulder.json
+│  │  
+│  ├─drafts
+│  │      android-icm-ecg-recorder.md
+│  │      
+│  ├─evidence
+│  │      task-1-structure.txt
+│  │      
+│  ├─notepads
+│  │  └─icm-ecg-recorder
+│  │          decisions.md
+│  │          issues.md
+│  │          learnings.md
+│  │          problems.md
+│  │          
+│  ├─plans
+│  │      icm-ecg-recorder.md
+│  │      
+│  └─run-continuation
+│          ses_16f7b618dffetjzYqBzZnW4pZ0.json
+│          ses_16fbc0e9effe43toI9FvDWDsSv.json
+│          
+├─icm
+│  │  config.py
+│  │  __init__.py
+│  │  
+│  └─__pycache__
+│          config.cpython-312.pyc
+│          __init__.cpython-312.pyc
+│          
+├─tests
+│  │  __init__.py
+│  │  
+│  └─fixtures
+│          __init__.py
+│          
+└─ui
+        __init__.py
+        

@@ -1,0 +1,11 @@
+{
+    "python.defaultInterpreterPath": "${workspaceFolder}/venv/Scripts/python.exe",
+    "python.analysis.typeCheckingMode": "off",
+    "python.testing.pytestEnabled": true,
+    "python.testing.pytestArgs": ["tests/"],
+    "python.testing.unittestEnabled": false,
+    "editor.formatOnSave": false,
+    "[python]": {
+        "editor.defaultFormatter": null
+    }
+}

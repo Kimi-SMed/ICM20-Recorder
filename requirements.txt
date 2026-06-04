@@ -1,0 +1,7 @@
+bleak>=0.21
+cryptography>=41.0
+crcmod>=1.7
+PyQt5>=5.15
+pyqtgraph>=0.13
+pytest>=7.4
+pandas>=2.0
