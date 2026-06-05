@@ -10,7 +10,7 @@ from PyQt5.QtCore import pyqtSignal, Qt
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout,
     QPushButton, QListWidget, QListWidgetItem,
-    QLabel, QGroupBox,
+    QLabel, QGroupBox, QFrame,
 )
 
 
@@ -43,6 +43,7 @@ class DevicePanel(QWidget):
         self._device_list = QListWidget()
         self._device_list.setSelectionMode(QListWidget.SingleSelection)
         self._device_list.itemDoubleClicked.connect(self._on_double_click)
+        self._device_list.setMaximumHeight(120)
         group_layout.addWidget(self._device_list)
 
         # Status label
@@ -51,6 +52,18 @@ class DevicePanel(QWidget):
         group_layout.addWidget(self._status_label)
 
         layout.addWidget(group)
+
+        # Separator line
+        separator = QFrame()
+        separator.setFrameShape(QFrame.HLine)
+        separator.setFrameShadow(QFrame.Sunken)
+        layout.addWidget(separator)
+
+        # Remote client connection status label
+        self._remote_status_label = QLabel("远程客户端: 未连接")
+        self._remote_status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._remote_status_label.setStyleSheet("color: #888888;")
+        layout.addWidget(self._remote_status_label)
 
         # Button row
         btn_layout = QHBoxLayout()
@@ -124,6 +137,16 @@ class DevicePanel(QWidget):
         self._scan_btn.setEnabled(not connected)
         self._connect_btn.setEnabled(not connected and len(self._devices) > 0)
         self._disconnect_btn.setEnabled(connected)
+
+    def set_remote_connected(self) -> None:
+        """Update remote status label to connected state."""
+        self._remote_status_label.setText("远程客户端: 已连接")
+        self._remote_status_label.setStyleSheet("color: #00aa00;")
+
+    def set_remote_disconnected(self) -> None:
+        """Update remote status label to disconnected state."""
+        self._remote_status_label.setText("远程客户端: 未连接")
+        self._remote_status_label.setStyleSheet("color: #888888;")
 
     def selected_address(self) -> Optional[str]:
         """Return MAC address of selected device, or None."""

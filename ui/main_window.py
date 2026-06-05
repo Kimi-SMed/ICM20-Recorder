@@ -32,6 +32,7 @@ from PyQt5.QtWidgets import (
 from icm.ble_client import ICMBleClient
 from icm.ecg_writer import ECGCsvWriter
 from icm.config import CSV_DEFAULT_DIR
+from icm.remote_server import RemoteControlServer
 from ui.async_bridge import AsyncBridge
 from ui.device_panel import DevicePanel
 from ui.plot_widget import ECGPlotWidget
@@ -76,6 +77,14 @@ class MainWindow(QMainWindow):
         self._perm_timer.setInterval(14 * 60 * 1000)
         self._perm_timer.timeout.connect(self._renew_host_permission)
         # Started only after handshake, stopped on disconnect
+
+        # Remote control server
+        self._remote_server = RemoteControlServer(self)
+        self._remote_server.remote_connected.connect(self._device_panel.set_remote_connected)
+        self._remote_server.remote_disconnected.connect(self._device_panel.set_remote_disconnected)
+        self._remote_server.start_recording_requested.connect(self._on_remote_start_recording)
+        self._remote_server.stop_recording_requested.connect(self._on_stop_recording)
+        self._remote_server.start()
 
     def _setup_ui(self) -> None:
         central = QWidget()
@@ -186,6 +195,17 @@ class MainWindow(QMainWindow):
 
     def _on_stop_recording(self) -> None:
         self._do_stop_recording()
+
+    @pyqtSlot()
+    def _on_remote_start_recording(self) -> None:
+        """Handle remote START_CSV command — ignore if already recording or BLE not connected."""
+        if self._writer is not None:
+            logger.debug("Remote start ignored: already recording")
+            return
+        if not self._ble.is_connected:
+            logger.debug("Remote start ignored: BLE not connected")
+            return
+        self._on_start_recording()
 
     def _do_stop_recording(self) -> None:
         """Stop CSV recording only — ECG notify stays active for live display."""
@@ -329,6 +349,9 @@ class MainWindow(QMainWindow):
         # Stop ECG notify + disconnect
         if self._ble.is_connected:
             self._bridge.submit_coro(self._ble.disconnect())
+
+        # Stop remote control server
+        self._remote_server.stop()
 
         # Stop asyncio bridge
         self._bridge.stop()
