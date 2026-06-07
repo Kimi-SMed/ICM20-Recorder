@@ -43,7 +43,7 @@ class DevicePanel(QWidget):
         self._device_list = QListWidget()
         self._device_list.setSelectionMode(QListWidget.SingleSelection)
         self._device_list.itemDoubleClicked.connect(self._on_double_click)
-        self._device_list.setMaximumHeight(120)
+        self._device_list.setMaximumHeight(400)
         group_layout.addWidget(self._device_list)
 
         # Status label

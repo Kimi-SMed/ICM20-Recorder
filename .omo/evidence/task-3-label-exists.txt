@@ -1,0 +1,22 @@
+VERIFICATION PASSED
+==================
+
+Task: Add remote client connection status label to device_panel.py
+
+Test Command Output:
+PASS
+
+Checks Performed:
+? _remote_status_label attribute exists
+? Default text: "远程客户端: 未连接"
+? set_remote_connected() sets text to "远程客户端: 已连接"
+? set_remote_connected() sets color to #00aa00
+? set_remote_disconnected() sets text to "远程客户端: 未连接"
+? set_remote_disconnected() sets color to #888888
+
+Implementation Details:
+- Device list maximum height capped to 120px
+- Horizontal separator line added above remote label
+- Remote status label center-aligned
+- Methods follow existing set_status() pattern
+- Existing BLE functionality unchanged

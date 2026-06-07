@@ -1,0 +1,2 @@
+Signals received: ['CONNECTED', 'START', 'STOP', 'DISCONNECTED']
+ALL SIGNALS OK

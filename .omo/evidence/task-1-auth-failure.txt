@@ -1,0 +1,3 @@
+AUTH failure: connection closed OK
+Second client recv: b'' (expected empty)
+PASS

@@ -1,117 +1,143 @@
 {
   "schema_version": 2,
-  "active_work_id": "icm-ecg-recorder-59bc9ee3",
+  "active_work_id": "remote-csv-control-ae157493",
   "works": {
-    "icm-ecg-recorder-59bc9ee3": {
-      "work_id": "icm-ecg-recorder-59bc9ee3",
-      "active_plan": "D:\\Singular_Medical\\ICM_GEN2\\Dvlp\\ICM2-CoDemo-Ultrasonic\\.omo\\plans\\icm-ecg-recorder.md",
-      "plan_name": "icm-ecg-recorder",
+    "remote-csv-control-ae157493": {
+      "work_id": "remote-csv-control-ae157493",
+      "active_plan": "D:\\Singular_Medical\\ICM_GEN2\\Dvlp\\ICM2-CoDemo-Ultrasonic\\.omo\\plans\\remote-csv-control.md",
+      "plan_name": "remote-csv-control",
       "status": "completed",
-      "started_at": "2026-06-04T04:18:28.723Z",
-      "updated_at": "2026-06-04T05:00:26.248Z",
+      "started_at": "2026-06-05T01:35:41.024Z",
+      "updated_at": "2026-06-05T01:49:51.814Z",
       "session_ids": [
-        "opencode:ses_16f255b25ffe59y2EahaSg0xX6"
+        "opencode:ses_16ab260b8ffeDjjcbXxUhHsVdv"
       ],
       "session_origins": {
-        "opencode:ses_16f255b25ffe59y2EahaSg0xX6": "direct"
+        "opencode:ses_16ab260b8ffeDjjcbXxUhHsVdv": "direct"
       },
       "agent": "atlas",
       "task_sessions": {
         "todo:1": {
           "task_key": "todo:1",
           "task_label": "1",
-          "task_title": "Project scaffolding + requirements.txt + config constants",
-          "session_id": "opencode:ses_16f2061b9ffeBpzQxpjNZtIAqf",
+          "task_title": "TCP Server Module (icm/remote_server.py)",
+          "session_id": "opencode:ses_16a909ae6ffeom6vaomXB60LwI",
           "agent": "Sisyphus-Junior",
           "category": "quick",
-          "updated_at": "2026-06-04T04:25:47.510Z",
-          "started_at": "2026-06-04T04:25:11.926Z",
+          "started_at": "2026-06-05T01:38:45.998Z",
           "status": "completed",
-          "ended_at": "2026-06-04T04:25:47.510Z",
-          "elapsed_ms": 35584
+          "updated_at": "2026-06-05T01:40:50.910Z",
+          "ended_at": "2026-06-05T01:40:50.910Z",
+          "elapsed_ms": 124912
         },
-        "todo:2": {
-          "task_key": "todo:2",
-          "task_label": "2",
-          "task_title": "icm/crypto.py - copy command_encryption.py and adapt",
-          "session_id": "opencode:ses_16f1cac43ffeBpA2jTMDCiTGJH",
+        "todo:3": {
+          "task_key": "todo:3",
+          "task_label": "3",
+          "task_title": "Device Panel UI — 远程连接状态标签",
+          "session_id": "opencode:ses_16a8eb8ceffetv5jDF6H9e96Wn",
           "agent": "Sisyphus-Junior",
           "category": "quick",
-          "started_at": "2026-06-04T04:27:48.185Z",
+          "updated_at": "2026-06-05T01:43:02.920Z",
+          "started_at": "2026-06-05T01:42:37.672Z",
           "status": "completed",
-          "updated_at": "2026-06-04T04:29:21.671Z",
-          "ended_at": "2026-06-04T04:29:21.671Z",
-          "elapsed_ms": 93486
+          "ended_at": "2026-06-05T01:43:02.920Z",
+          "elapsed_ms": 25248
+        },
+        "todo:4": {
+          "task_key": "todo:4",
+          "task_label": "4",
+          "task_title": "MainWindow Integration — 连接 RemoteServer 到 GUI",
+          "session_id": "opencode:ses_16a8cd443ffeaOpeLIM3ZXCIAm",
+          "agent": "Sisyphus-Junior",
+          "category": "unspecified-high",
+          "updated_at": "2026-06-05T01:46:29.892Z",
+          "started_at": "2026-06-05T01:45:38.619Z",
+          "status": "completed",
+          "ended_at": "2026-06-05T01:46:29.892Z",
+          "elapsed_ms": 51273
         },
         "final-wave:f1": {
           "task_key": "final-wave:f1",
           "task_label": "F1",
           "task_title": "**Plan Compliance Audit** — `oracle`",
-          "session_id": "opencode:ses_16f045b27ffereJMVeZbM7jt6L",
+          "session_id": "opencode:ses_16a89936effe3qqeSRu5TZ4ld0",
           "agent": "oracle",
-          "started_at": "2026-06-04T04:32:32.969Z",
+          "updated_at": "2026-06-05T01:49:02.816Z",
+          "started_at": "2026-06-05T01:47:16.195Z",
           "status": "completed",
-          "updated_at": "2026-06-04T04:57:09.553Z",
-          "ended_at": "2026-06-04T04:57:09.553Z",
-          "elapsed_ms": 1476584
+          "ended_at": "2026-06-05T01:49:02.816Z",
+          "elapsed_ms": 106621
         }
       },
-      "ended_at": "2026-06-04T05:00:26.248Z",
-      "elapsed_ms": 2517525
+      "ended_at": "2026-06-05T01:49:51.814Z",
+      "elapsed_ms": 850790
     }
   },
-  "active_plan": "D:\\Singular_Medical\\ICM_GEN2\\Dvlp\\ICM2-CoDemo-Ultrasonic\\.omo\\plans\\icm-ecg-recorder.md",
-  "started_at": "2026-06-04T04:18:28.723Z",
+  "active_plan": "D:\\Singular_Medical\\ICM_GEN2\\Dvlp\\ICM2-CoDemo-Ultrasonic\\.omo\\plans\\remote-csv-control.md",
+  "started_at": "2026-06-05T01:35:41.024Z",
   "status": "completed",
-  "updated_at": "2026-06-04T05:00:26.248Z",
+  "updated_at": "2026-06-05T01:49:51.814Z",
   "session_ids": [
-    "opencode:ses_16f255b25ffe59y2EahaSg0xX6"
+    "opencode:ses_16ab260b8ffeDjjcbXxUhHsVdv"
   ],
   "session_origins": {
-    "opencode:ses_16f255b25ffe59y2EahaSg0xX6": "direct"
+    "opencode:ses_16ab260b8ffeDjjcbXxUhHsVdv": "direct"
   },
-  "plan_name": "icm-ecg-recorder",
+  "plan_name": "remote-csv-control",
   "task_sessions": {
     "todo:1": {
       "task_key": "todo:1",
       "task_label": "1",
-      "task_title": "Project scaffolding + requirements.txt + config constants",
-      "session_id": "opencode:ses_16f2061b9ffeBpzQxpjNZtIAqf",
+      "task_title": "TCP Server Module (icm/remote_server.py)",
+      "session_id": "opencode:ses_16a909ae6ffeom6vaomXB60LwI",
       "agent": "Sisyphus-Junior",
       "category": "quick",
-      "updated_at": "2026-06-04T04:25:47.510Z",
-      "started_at": "2026-06-04T04:25:11.926Z",
+      "started_at": "2026-06-05T01:38:45.998Z",
       "status": "completed",
-      "ended_at": "2026-06-04T04:25:47.510Z",
-      "elapsed_ms": 35584
+      "updated_at": "2026-06-05T01:40:50.910Z",
+      "ended_at": "2026-06-05T01:40:50.910Z",
+      "elapsed_ms": 124912
     },
-    "todo:2": {
-      "task_key": "todo:2",
-      "task_label": "2",
-      "task_title": "icm/crypto.py - copy command_encryption.py and adapt",
-      "session_id": "opencode:ses_16f1cac43ffeBpA2jTMDCiTGJH",
+    "todo:3": {
+      "task_key": "todo:3",
+      "task_label": "3",
+      "task_title": "Device Panel UI — 远程连接状态标签",
+      "session_id": "opencode:ses_16a8eb8ceffetv5jDF6H9e96Wn",
       "agent": "Sisyphus-Junior",
       "category": "quick",
-      "started_at": "2026-06-04T04:27:48.185Z",
+      "updated_at": "2026-06-05T01:43:02.920Z",
+      "started_at": "2026-06-05T01:42:37.672Z",
       "status": "completed",
-      "updated_at": "2026-06-04T04:29:21.671Z",
-      "ended_at": "2026-06-04T04:29:21.671Z",
-      "elapsed_ms": 93486
+      "ended_at": "2026-06-05T01:43:02.920Z",
+      "elapsed_ms": 25248
+    },
+    "todo:4": {
+      "task_key": "todo:4",
+      "task_label": "4",
+      "task_title": "MainWindow Integration — 连接 RemoteServer 到 GUI",
+      "session_id": "opencode:ses_16a8cd443ffeaOpeLIM3ZXCIAm",
+      "agent": "Sisyphus-Junior",
+      "category": "unspecified-high",
+      "updated_at": "2026-06-05T01:46:29.892Z",
+      "started_at": "2026-06-05T01:45:38.619Z",
+      "status": "completed",
+      "ended_at": "2026-06-05T01:46:29.892Z",
+      "elapsed_ms": 51273
     },
     "final-wave:f1": {
       "task_key": "final-wave:f1",
       "task_label": "F1",
       "task_title": "**Plan Compliance Audit** — `oracle`",
-      "session_id": "opencode:ses_16f045b27ffereJMVeZbM7jt6L",
+      "session_id": "opencode:ses_16a89936effe3qqeSRu5TZ4ld0",
       "agent": "oracle",
-      "started_at": "2026-06-04T04:32:32.969Z",
+      "updated_at": "2026-06-05T01:49:02.816Z",
+      "started_at": "2026-06-05T01:47:16.195Z",
       "status": "completed",
-      "updated_at": "2026-06-04T04:57:09.553Z",
-      "ended_at": "2026-06-04T04:57:09.553Z",
-      "elapsed_ms": 1476584
+      "ended_at": "2026-06-05T01:49:02.816Z",
+      "elapsed_ms": 106621
     }
   },
   "agent": "atlas",
-  "ended_at": "2026-06-04T05:00:26.248Z",
-  "elapsed_ms": 2517525
+  "ended_at": "2026-06-05T01:49:51.814Z",
+  "elapsed_ms": 850790
 }

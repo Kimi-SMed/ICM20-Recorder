@@ -93,7 +93,7 @@ if __name__ == "__main__":
     client.start_record()
     
     # 录制 5 秒 / Record for 5 seconds
-    time.sleep(5)
+    time.sleep(10)
     
     # 停止录制 / Stop recording
     print("停止录制 / Stopping recording...")
