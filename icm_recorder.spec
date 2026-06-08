@@ -10,12 +10,13 @@ Required collect_all packages:
   - PyQt5: GUI framework
   - pyqtgraph: real-time plotting
   - cryptography: AES encryption for handshake
+  - pandas: CSV loading for the review plot
 """
 
 from PyInstaller.utils.hooks import collect_all
 
 # Collect all submodules and data for these packages
-collect_all_packages = ['bleak', 'winrt', 'PyQt5', 'pyqtgraph', 'cryptography']
+collect_all_packages = ['bleak', 'winrt', 'PyQt5', 'pyqtgraph', 'cryptography', 'pandas']
 
 all_datas = []
 all_binaries = []
