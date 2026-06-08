@@ -36,6 +36,7 @@ from icm.remote_server import RemoteControlServer
 from ui.async_bridge import AsyncBridge
 from ui.device_panel import DevicePanel
 from ui.plot_widget import ECGPlotWidget
+from ui.review_plot_widget import ReviewPlotWidget
 
 logger = logging.getLogger(__name__)
 
@@ -89,7 +90,7 @@ class MainWindow(QMainWindow):
     def _setup_ui(self) -> None:
         central = QWidget()
         self.setCentralWidget(central)
-        main_layout = QHBoxLayout(central)
+        main_layout = QVBoxLayout(central)
 
         # Left: device panel
         self._device_panel = DevicePanel()
@@ -101,12 +102,21 @@ class MainWindow(QMainWindow):
         # Center: ECG plot
         self._plot = ECGPlotWidget()
 
-        splitter = QSplitter()  # default is horizontal
-        splitter.addWidget(self._device_panel)
-        splitter.addWidget(self._plot)
-        splitter.setStretchFactor(0, 0)
-        splitter.setStretchFactor(1, 1)
-        main_layout.addWidget(splitter)
+        h_splitter = QSplitter(Qt.Orientation.Horizontal)
+        h_splitter.addWidget(self._device_panel)
+        h_splitter.addWidget(self._plot)
+        h_splitter.setStretchFactor(0, 0)
+        h_splitter.setStretchFactor(1, 1)
+
+        # Bottom: Review plot (hidden until recording stops)
+        self._review_plot = ReviewPlotWidget()
+
+        v_splitter = QSplitter(Qt.Orientation.Vertical)
+        v_splitter.addWidget(h_splitter)
+        v_splitter.addWidget(self._review_plot)
+        v_splitter.setStretchFactor(0, 3)
+        v_splitter.setStretchFactor(1, 1)
+        main_layout.addWidget(v_splitter)
 
         # Toolbar widget in status bar
         toolbar_widget = QWidget()
@@ -122,6 +132,12 @@ class MainWindow(QMainWindow):
         self._stop_btn.setEnabled(False)
         self._stop_btn.clicked.connect(self._on_stop_recording)
         toolbar_layout.addWidget(self._stop_btn)
+
+        # Review button: opens the review panel (so user can Load any CSV)
+        self._review_btn = QPushButton("Review")
+        self._review_btn.setToolTip("Open review panel to load and inspect CSV recordings")
+        self._review_btn.clicked.connect(self._on_review_clicked)
+        toolbar_layout.addWidget(self._review_btn)
 
         toolbar_layout.addStretch()
 
@@ -196,6 +212,10 @@ class MainWindow(QMainWindow):
     def _on_stop_recording(self) -> None:
         self._do_stop_recording()
 
+    def _on_review_clicked(self) -> None:
+        """Show the review panel so user can load any CSV file."""
+        self._review_plot.show()
+
     @pyqtSlot()
     def _on_remote_start_recording(self) -> None:
         """Handle remote START_CSV command — ignore if already recording or BLE not connected."""
@@ -209,13 +229,19 @@ class MainWindow(QMainWindow):
 
     def _do_stop_recording(self) -> None:
         """Stop CSV recording only — ECG notify stays active for live display."""
+        csv_path = None
         if self._writer:
+            csv_path = self._writer.current_path
             self._writer.close()
             self._writer = None
         self._start_btn.setEnabled(True)
         self._stop_btn.setEnabled(False)
         self._file_label.setText("")
         self._status_bar.showMessage("Recording stopped. Ready to record again.")
+
+        # Load the just-recorded CSV into the review plot
+        if csv_path and csv_path.exists():
+            self._review_plot.load_csv(csv_path)
 
     # ------------------------------------------------------------------
     # BLE callbacks (called from asyncio thread → marshal to Qt thread)
