@@ -24,6 +24,7 @@ classdef MainWindow < handle
         startBtn
         stopBtn
         reviewBtn
+        windowBtn
         ampLabel
         sampleLabel
         hrLabel
@@ -103,8 +104,8 @@ classdef MainWindow < handle
             obj.review = ui.ReviewPlotWidget();
 
             % ----- bottom: toolbar / status bar -----
-            obj.statusBar = uigridlayout(outer, [1 8], ...
-                'ColumnWidth', {120, 120, 80, '1x', 110, 110, 110, 220}, ...
+            obj.statusBar = uigridlayout(outer, [1 9], ...
+                'ColumnWidth', {120, 120, 80, 95, '1x', 110, 110, 110, 160}, ...
                 'Padding', 2, 'ColumnSpacing', 6);
 
             obj.startBtn = uibutton(obj.statusBar, 'Text', 'Start Recording', ...
@@ -113,6 +114,8 @@ classdef MainWindow < handle
                 'Enable', 'off', 'ButtonPushedFcn', @(~,~) obj.stopRecording());
             obj.reviewBtn = uibutton(obj.statusBar, 'Text', 'Review', ...
                 'ButtonPushedFcn', @(~,~) obj.review.show());  % open review window
+            obj.windowBtn = uibutton(obj.statusBar, 'Text', '窗口: 10s', ...
+                'ButtonPushedFcn', @(~,~) obj.onCycleWindow());
 
             obj.fileLabel = uilabel(obj.statusBar, 'Text', ...
                 'Idle - Click Scan to find ICM devices');
@@ -248,6 +251,11 @@ classdef MainWindow < handle
                 return;   % BLE not connected
             end
             obj.startRecording();
+        end
+
+        function onCycleWindow(obj)
+            sec = obj.plot.cycleWindow();
+            obj.windowBtn.Text = sprintf('窗口: %ds', sec);
         end
 
         function renewPermission(obj)
